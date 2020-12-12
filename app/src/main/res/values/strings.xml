@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ToDoList</string>
+    <string name="priority_high">High</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_low">Low</string>
+    <string name="tv_info_select_priority_txt">Select task priority</string>
+    <string name="et_task_entry_txt">Describe your task entry</string>
+    <string name="tv_select_max_date_txt">Select the day for finish the task</string>
+</resources>
