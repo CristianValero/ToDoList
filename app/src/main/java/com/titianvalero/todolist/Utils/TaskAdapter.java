@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.titianvalero.todolist.R;
+import com.titianvalero.todolist.Utils.Database.DatabaseManager;
 import com.titianvalero.todolist.Utils.Database.FeedReaderDatabaseHelper;
 
 import java.util.ArrayList;
@@ -23,10 +24,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private List<Task> tasks;
     private final Context context;
+    private final DatabaseManager databaseManager;
 
-    public TaskAdapter(Context context) {
+    public TaskAdapter(Context context, DatabaseManager databaseManager) {
         this.tasks = new ArrayList<>();
         this.context = context;
+        this.databaseManager = databaseManager;
     }
 
     @NonNull
@@ -66,22 +69,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private void databaseTaskRead() {
         final String query = "SELECT * FROM tasks;";
-        FeedReaderDatabaseHelper dbHelper = new FeedReaderDatabaseHelper(context);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        Cursor cursor = database.query("tasks", new String[]{"id", "entry", "priority", "date_expire"}, null, null, null, null, null);
+        Cursor cursor = databaseManager.getQuery(query);
 
         while ( cursor.moveToNext() )
             tasks.add(new Task(cursor.getString(1), cursor.getString(3), cursor.getInt(2)));
 
         cursor.close();
-        database.close();
     }
 
     private void deleteCompletedTask(final String taskName) {
-        FeedReaderDatabaseHelper dbHelper = new FeedReaderDatabaseHelper(context);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        database.delete("tasks", "entry='" + taskName + "'", null);
-        database.close();
+        databaseManager.deleteData(taskName);
 
         List<Task> updated = new ArrayList<>();
 

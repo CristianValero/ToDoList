@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 public class FeedReaderDatabaseHelper extends SQLiteOpenHelper {
 
     private final static String TASKS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, entry VARCHAR(100), priority INTEGER, date_expire DATE);";
-    private final static String DATABASE_NAME = "tasks";
     private final static int DATABASE_VERSION = 1;
+    public final static String DATABASE_NAME = "tasks";
 
     public FeedReaderDatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

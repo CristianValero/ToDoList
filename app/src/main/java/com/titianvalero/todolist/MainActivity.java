@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.titianvalero.todolist.Utils.Database.DatabaseManager;
 import com.titianvalero.todolist.Utils.Database.FeedReaderDatabaseHelper;
 import com.titianvalero.todolist.Utils.Task;
 import com.titianvalero.todolist.Utils.TaskAdapter;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_CREATE_TASK_ACTIVITY = 100;
 
     private TaskAdapter taskAdapter;
+    private DatabaseManager databaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
         final Toolbar tbMain = findViewById(R.id.tb_main);
         final RecyclerView rvTasks = findViewById(R.id.rv_show_tasks);
 
-        taskAdapter = new TaskAdapter(getApplicationContext());
+        databaseManager = new DatabaseManager(new FeedReaderDatabaseHelper(getApplicationContext()), this);
+
+        taskAdapter = new TaskAdapter(getApplicationContext(), databaseManager);
         taskAdapter.loadTasksFromDatabase();
 
         rvTasks.setHasFixedSize(true);
@@ -84,10 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         if ( entry != null && date != null && priority != 0 ) {
             final String query = "INSERT INTO tasks ( entry, priority, date_expire ) VALUES ( '" + entry + "', " + priority + ", '" + date + "' );";
-            FeedReaderDatabaseHelper dbHelper = new FeedReaderDatabaseHelper(getApplicationContext());
-            SQLiteDatabase database = dbHelper.getWritableDatabase();
-            database.execSQL(query);
-            database.close();
+            databaseManager.insertData(query);
         }
 
         taskAdapter.insertNewTask(new Task(entry, date, priority));
